@@ -1,0 +1,35 @@
+---
+title: "Data view"
+author: "Qi Zhao"
+date: "February 22, 2018"
+output: html_document
+---
+```{r  echo=FALSE,warning=FALSE,message=FALSE,cache=TRUE}
+library(dplyr)
+fulldata <- read.csv("Qidata/fulldata.csv")
+data <- fulldata[c("rank","Rating","SOS","Standard","Aegis","win","lose")]
+names <- colnames(data)
+color=c("powderblue","olivedrab","skyblue","plum","tomato","purple","slateblue", "red","khaki","yellow","green","greenyellow")
+```
+
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+library(rbokeh)
+library(shiny)
+inputPanel(
+  selectInput("v1", label = "Choose the Variable",
+              choices = as.vector(names), selected = names[1]),
+  selectInput("v2", label = "Choose another Variable",
+              choices = as.vector(names), selected = names[2]),
+  selectInput("color", label = "Choose color:",
+              choices = as.vector(color), selected = color[1]))
+
+renderRbokeh({
+   figure(xlab = input$v1, ylab= input$v2, width = 600, height = 400) %>%
+            ly_points(x = names[[input$v1]], 
+                      y = names[[input$v2]],
+                      data = data  
+                      color = input$color)
+})
+```
+
